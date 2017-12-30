@@ -4,133 +4,125 @@
 
 extern keymap_config_t keymap_config;
 
-#define _QWERTY 0
+#define _ALPHA 0
 #define _LOWER 1
 #define _RAISE 2
 #define _ADJUST 16
 
+// Set to _ALPHA when no layer button is pressed
+static uint8_t pressed_layer = _ALPHA;
+static bool lock_is_pressed  = false;
+
 enum custom_keycodes {
-  QWERTY = SAFE_RANGE,
+  ALPHA = SAFE_RANGE,
   LOWER,
   RAISE,
-  ADJUST,
+  MOUSE,
+  LOCK, // For locking layers
 };
 
 #define KC_ KC_TRNS
-#define _______ KC_TRNS
-
 #define KC_LOWR LOWER
 #define KC_RASE RAISE
-#define KC_RST RESET
-#define KC_BL_S BL_STEP
+#define KC_LOCK LOCK
 
+/* TODO
+ * https://docs.qmk.fm/feature_mouse_keys.html
+ * http://www.openstenoproject.org/ LEARN STENOGRAPHY
+ */
+
+// Referenc: https://docs.qmk.fm/keycodes.html
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-
-  [_QWERTY] = KC_KEYMAP(
+  [_ALPHA] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
          , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     TAB ,    , Z  , L  , P  , Y  ,                F  , G  , C  , R  ,    ,    ,
+     TAB ,PPLS, Z  , L  , P  , Y  ,                F  , G  , C  , R  ,PMNS,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     ESC , A  , O  , E  , U  , I  ,                D  , H  , T  , N  , S  ,    ,
+     ESC , A  , O  , E  , U  , I  ,                D  , H  , T  , N  , S  ,ENT ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-         ,    , Q  , J  , K  , X  ,SPC ,     ENT , B  , M  , W  , V ,     ,    ,
+         ,UNDS, Q  , J  , K  , X  ,    ,     LOCK, B  , M  , W  , V , QUOT,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                       LCTL,LOWR,SPC ,         ENT ,LGUI,LALT
+                       LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
   ),
 
   [_LOWER] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-     TILD,EXLM, AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,LPRN,RPRN,BSPC,
+     F12 , F1 , F2 , F3 , F4 , F5 ,                F6 , F7 , F8 , F9 ,F10 ,F11 ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     RST , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,    ,
+    DEBUG,    , AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,PIPE,EQL ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     DEL ,    ,LEFT,RGHT, UP ,LBRC,               RBRC, P4 , P5 , P6 ,PLUS,PIPE,
+         ,LCBR,LABK,LPRN,LBRC,SLSH,               NUBS,RBRC,RPRN,RABK,RCBR,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     BL_S,    ,    ,    ,DOWN,LCBR,LPRN,     RPRN,RCBR, P1 , P2 , P3 ,MINS,    ,
+         ,EXLM,COMM,DOT ,QUES,TILD,    ,     LOCK,LEFT,DOWN, UP ,RGHT,GRV ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                           ,    ,DEL ,         DEL ,    , P0
+                       LGUI,LSFT,SPC ,             ,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
   ),
 
   [_RAISE] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-     F12 , F1 , F2 , F3 , F4 , F5 ,                F6 , F7 , F8 , F9 ,F10 ,F11 ,
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,EXLM, AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,LPRN,RPRN,    ,
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,MPRV,MNXT,VOLU,PGUP,UNDS,               EQL ,HOME,    ,    ,    ,BSLS,
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     MUTE,MSTP,MPLY,VOLD,PGDN,MINS,    ,         ,PLUS,END ,    ,    ,    ,    ,
+         ,    ,    ,    ,    ,    ,    ,         ,    ,    ,    ,    ,    ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                            ,    ,    ,             ,    ,
   //                  `----+----+----'        `----+----+----'
   ),
 
-  [_ADJUST] = KEYMAP(
+  [_MOUSE] = KEYMAP(
   //,--------+--------+--------+--------+--------+--------.                          ,--------+--------+--------+--------+--------+--------.
-      _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
+             ,        ,        ,        ,        ,        ,                                   ,        ,        ,        ,        ,        ,
   //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-      RGB_TOG, RGB_MOD, RGB_HUI, RGB_SAI, RGB_VAI, _______,                            _______, _______, _______, _______, _______, _______,
+             ,        ,        ,        ,        ,        ,                                   ,        ,        ,        ,        ,        ,
   //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-      _______, DEBUG  , RGB_HUD, RGB_SAD, RGB_VAD, _______,                            _______, _______, _______, _______, _______, _______,
+             ,        ,        ,        ,        ,        ,                                   ,        ,        ,        ,        ,        ,
   //|--------+--------+--------+--------+--------+--------+--------.        ,--------|--------+--------+--------+--------+--------+--------|
-      BL_STEP, RESET  , _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
+             ,        ,        ,        ,        ,        ,        ,                 ,        ,        ,        ,        ,        ,        ,
   //`--------+--------+--------+----+---+--------+--------+--------/        \--------+--------+--------+---+----+--------+--------+--------'
-                                      _______, _______, _______,                  _______, _______, _______
+                                             ,        ,        ,                         ,        ,
   //                                `--------+--------+--------'                `--------+--------+--------'
   )
 };
-
-#ifdef AUDIO_ENABLE
-float tone_qwerty[][2]     = SONG(QWERTY_SOUND);
-#endif
 
 void persistent_default_layer_set(uint16_t default_layer) {
   eeconfig_update_default_layer(default_layer);
   default_layer_set(default_layer);
 }
 
+void switch_to_layer(uint8_t layer, bool pressed) {
+  if (pressed) {
+    layer_on(layer);
+    pressed_layer = layer;
+  } else if (!lock_is_pressed) {
+    layer_off(layer);
+    pressed_layer = _ALPHA;
+  }
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          PLAY_SONG(tone_qwerty);
-        #endif
-        persistent_default_layer_set(1UL<<_QWERTY);
-      }
-      return false;
-      break;
-    case LOWER:
-      if (record->event.pressed) {
-        layer_on(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-      break;
-    case RAISE:
-      if (record->event.pressed) {
-        layer_on(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-      break;
-    case ADJUST:
-      if (record->event.pressed) {
-        layer_on(_ADJUST);
-      } else {
-        layer_off(_ADJUST);
-      }
-      return false;
-      break;
+  case LOWER:
+    switch_to_layer(_LOWER, record->event.pressed);
+    return false;
+  case RAISE:
+    switch_to_layer(_RAISE, record->event.pressed);
+    return false;
+  case MOUSE:
+    switch_to_layer(_ADJUST, record->event.pressed);
+    return false;
+  case LOCK:
+    lock_is_pressed = record->event.pressed;
+
+    if (lock_is_pressed && pressed_layer == _ALPHA) {
+      layen_on(ALPHA);
+    }
+    return false;
   }
   return true;
 }
