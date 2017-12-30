@@ -7,7 +7,7 @@ extern keymap_config_t keymap_config;
 #define _ALPHA 0
 #define _LOWER 1
 #define _RAISE 2
-#define _ADJUST 16
+#define _MOUSE 4
 
 // Set to _ALPHA when no layer button is pressed
 static uint8_t pressed_layer = _ALPHA;
@@ -24,6 +24,7 @@ enum custom_keycodes {
 #define KC_ KC_TRNS
 #define KC_LOWR LOWER
 #define KC_RASE RAISE
+#define KC_MAU5 MOUSE
 #define KC_LOCK LOCK
 
 /* TODO
@@ -41,7 +42,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      ESC , A  , O  , E  , U  , I  ,                D  , H  , T  , N  , S  ,ENT ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-         ,UNDS, Q  , J  , K  , X  ,    ,     LOCK, B  , M  , W  , V , QUOT,    ,
+     MAU5,UNDS, Q  , J  , K  , X  ,    ,     LOCK, B  , M  , W  , V , QUOT,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                        LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
@@ -51,13 +52,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
      F12 , F1 , F2 , F3 , F4 , F5 ,                F6 , F7 , F8 , F9 ,F10 ,F11 ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-    DEBUG,    , AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,PIPE,EQL ,    ,
+         ,    , AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,PIPE,EQL ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,LCBR,LABK,LPRN,LBRC,SLSH,               NUBS,RBRC,RPRN,RABK,RCBR,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
          ,EXLM,COMM,DOT ,QUES,TILD,    ,     LOCK,LEFT,DOWN, UP ,RGHT,GRV ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                       LGUI,LSFT,SPC ,             ,LCTL,LALT
+                       LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
   ),
 
@@ -69,25 +70,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,    ,         ,    ,    ,    ,    ,    ,    ,
+         ,    ,    ,    ,    ,    ,    ,     LOCK,    ,    ,    ,    ,    ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                            ,    ,    ,             ,    ,
   //                  `----+----+----'        `----+----+----'
   ),
 
-  [_MOUSE] = KEYMAP(
-  //,--------+--------+--------+--------+--------+--------.                          ,--------+--------+--------+--------+--------+--------.
-             ,        ,        ,        ,        ,        ,                                   ,        ,        ,        ,        ,        ,
-  //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-             ,        ,        ,        ,        ,        ,                                   ,        ,        ,        ,        ,        ,
-  //|--------+--------+--------+--------+--------+--------|                          |--------+--------+--------+--------+--------+--------|
-             ,        ,        ,        ,        ,        ,                                   ,        ,        ,        ,        ,        ,
-  //|--------+--------+--------+--------+--------+--------+--------.        ,--------|--------+--------+--------+--------+--------+--------|
-             ,        ,        ,        ,        ,        ,        ,                 ,        ,        ,        ,        ,        ,        ,
-  //`--------+--------+--------+----+---+--------+--------+--------/        \--------+--------+--------+---+----+--------+--------+--------'
-                                             ,        ,        ,                         ,        ,
-  //                                `--------+--------+--------'                `--------+--------+--------'
-  )
+  [_MOUSE] = KC_KEYMAP(
+  //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
+  //|----+----+----+----+----+----|              |----+----+----+----+----+----|
+         ,    ,    ,    ,    ,    ,                   ,WH_L,WH_D,WH_U,WH_R,    ,
+  //|----+----+----+----+----+----|              |----+----+----+----+----+----|
+         ,    ,    ,    ,    ,    ,                   ,MS_L,MS_D,MS_U,MS_R,    ,
+  //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
+     MAU5,    ,    ,    ,    ,    ,    ,     LOCK,    ,    ,    ,    ,    ,    ,
+  //`----+----+----+----+----+----+----/    \----+----+----+----+----+----+----'
+                           ,    ,    ,         BTN1,BTN2,BTN3
+  //                  `----+----+----'        `----+----+----'
+  ),
 };
 
 void persistent_default_layer_set(uint16_t default_layer) {
@@ -114,13 +115,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch_to_layer(_RAISE, record->event.pressed);
     return false;
   case MOUSE:
-    switch_to_layer(_ADJUST, record->event.pressed);
+    switch_to_layer(_MOUSE, record->event.pressed);
     return false;
   case LOCK:
     lock_is_pressed = record->event.pressed;
 
     if (lock_is_pressed && pressed_layer == _ALPHA) {
-      layen_on(ALPHA);
+      layer_on(_ALPHA);
     }
     return false;
   }
