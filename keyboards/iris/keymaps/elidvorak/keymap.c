@@ -39,11 +39,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
          , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,RASE,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     TAB ,PPLS, Z  , L  , P  , Y  ,                F  , G  , C  , R  ,PMNS,BSPC,
+     TAB ,QUOT,PPLS,PMNS, P  , Y  ,                F  , G  , C  , R  , L  ,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      ESC , A  , O  , E  , U  , I  ,                D  , H  , T  , N  , S  ,ENT ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     MAU5,UNDS, Q  , J  , K  , X  ,RASE,     LOCK, B  , M  , W  , V , QUOT,    ,
+     MAU5,UNDS, Q  , J  , K  , X  ,RASE,     LOCK, B  , M  , W  , V ,  Z  ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                        LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
@@ -63,17 +63,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //                  `----+----+----'        `----+----+----'
   ),
 
-  [_RAISE] = KEYMAP(
+  [_RAISE] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,               TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,               TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
+         ,    ,    ,    ,    ,    ,               VOLU,    ,MSTP,    ,    ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     MI_A,MI_B,TRNS,TRNS,TRNS,TRNS,               TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
-  //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,KC_RASE,     KC_LOCK,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
+         ,    ,    ,    ,    ,    ,               VOLD,MPRV,MPLY,MNXT,    ,    ,
+  //|----+----+----+----+----+----+---.    ,----|----+----+----+----+----+----|
+         ,    ,    ,    ,    ,    ,RASE,         ,MUTE,    ,    ,    ,    ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                       TRNS,TRNS,TRNS,         TRNS,TRNS,TRNS
+                           ,    ,    ,             ,    ,
   //                  `----+----+----'        `----+----+----'
   ),
 
