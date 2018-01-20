@@ -21,6 +21,7 @@ enum custom_keycodes {
   LOCK, // For locking layers
 };
 
+#define TRNS KC_TRNS
 #define KC_ KC_TRNS
 #define KC_LOWR LOWER
 #define KC_RASE RAISE
@@ -36,13 +37,13 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_ALPHA] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,    ,
+         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,RASE,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      TAB ,PPLS, Z  , L  , P  , Y  ,                F  , G  , C  , R  ,PMNS,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      ESC , A  , O  , E  , U  , I  ,                D  , H  , T  , N  , S  ,ENT ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     MAU5,UNDS, Q  , J  , K  , X  ,    ,     LOCK, B  , M  , W  , V , QUOT,    ,
+     MAU5,UNDS, Q  , J  , K  , X  ,RASE,     LOCK, B  , M  , W  , V , QUOT,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                        LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
@@ -54,25 +55,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    , AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,PIPE,EQL ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,LCBR,LABK,LPRN,LBRC,SLSH,               NUBS,RBRC,RPRN,RABK,RCBR,    ,
-  //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
+     COLN,LCBR,LABK,LPRN,LBRC,SLSH,               BSLS,RBRC,RPRN,RABK,RCBR,SCLN,
+  //|----+----+----+----+----+----+---.    ,----|----+----+----+----+----+----|
          ,EXLM,COMM,DOT ,QUES,TILD,    ,     LOCK,LEFT,DOWN, UP ,RGHT,GRV ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                        LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
   ),
 
-  [_RAISE] = KC_KEYMAP(
+  [_RAISE] = KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
+     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,               TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
+     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,               TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
+     MI_A,MI_B,TRNS,TRNS,TRNS,TRNS,               TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,    ,     LOCK,    ,    ,    ,    ,    ,    ,
+     TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,KC_RASE,     KC_LOCK,TRNS,TRNS,TRNS,TRNS,TRNS,TRNS,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                           ,    ,    ,             ,    ,
+                       TRNS,TRNS,TRNS,         TRNS,TRNS,TRNS
   //                  `----+----+----'        `----+----+----'
   ),
 
@@ -80,13 +81,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
          ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,                   ,WH_L,WH_D,WH_U,WH_R,    ,
+      TAB, Q  , W  , E  , R  , T  ,                   ,WH_L,WH_D,WH_U,WH_R,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,                   ,MS_L,MS_D,MS_U,MS_R,    ,
+      ESC, A  , S  , D  , F  , G  ,                   ,MS_L,MS_D,MS_U,MS_R,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     MAU5,    ,    ,    ,    ,    ,    ,     LOCK,    ,    ,    ,    ,    ,    ,
+     MAU5, Z  , X  , C  , V  , B  , M  ,     LOCK,    ,    ,    ,    ,    ,    ,
   //`----+----+----+----+----+----+----/    \----+----+----+----+----+----+----'
-                           ,    ,    ,         BTN1,BTN2,BTN3
+                           ,LSFT,    ,         BTN1,BTN2,BTN3
   //                  `----+----+----'        `----+----+----'
   ),
 };
@@ -100,9 +101,11 @@ void switch_to_layer(uint8_t layer, bool pressed) {
   if (pressed) {
     layer_on(layer);
     pressed_layer = layer;
-  } else if (!lock_is_pressed) {
-    layer_off(layer);
-    pressed_layer = _ALPHA;
+  } else {
+    if (!lock_is_pressed) {
+      layer_off(layer);
+      pressed_layer = _ALPHA;
+    }
   }
 }
 
@@ -119,10 +122,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return false;
   case LOCK:
     lock_is_pressed = record->event.pressed;
-
-    if (lock_is_pressed && pressed_layer == _ALPHA) {
-      layer_on(_ALPHA);
-    }
     return false;
   }
   return true;
