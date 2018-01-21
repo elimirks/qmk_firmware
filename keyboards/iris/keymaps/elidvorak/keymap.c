@@ -5,9 +5,10 @@
 extern keymap_config_t keymap_config;
 
 #define _ALPHA 0
-#define _LOWER 1
-#define _RAISE 2
-#define _MOUSE 4
+#define _SHIFT 1
+#define _LOWER 2
+#define _RAISE 4
+#define _MOUSE 8
 
 // Set to _ALPHA when no layer button is pressed
 static uint8_t pressed_layer = _ALPHA;
@@ -15,21 +16,34 @@ static bool lock_is_pressed  = false;
 
 enum custom_keycodes {
   ALPHA = SAFE_RANGE,
+  SHIFT,
   LOWER,
   RAISE,
   MOUSE,
   LOCK, // For locking layers
+  TOOA,
+  EMAI,
+  EARS,
+  DYNAMIC_MACRO_RANGE,
 };
+
+#include "dynamic_macro.h"
 
 #define TRNS KC_TRNS
 #define KC_ KC_TRNS
 #define KC_LOWR LOWER
+#define KC_SHFT SHIFT
 #define KC_RASE RAISE
 #define KC_MAU5 MOUSE
 #define KC_LOCK LOCK
+#define KC_TOOA TOOA
+#define KC_EMAI EMAI
+#define KC_EARS EARS
+#define KC_SMC1 DYN_REC_START1
+#define KC_PMC1 DYN_MACRO_PLAY1
+#define KC_STMC DYN_REC_STOP
 
 /* TODO
- * https://docs.qmk.fm/feature_mouse_keys.html
  * http://www.openstenoproject.org/ LEARN STENOGRAPHY
  */
 
@@ -37,15 +51,29 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_ALPHA] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,RASE,
+         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,LOCK,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     TAB ,QUOT,PPLS,PMNS, P  , Y  ,                F  , G  , C  , R  , L  ,BSPC,
+     TAB ,QUOT,COMM,DOT , P  , Y  ,                F  , G  , C  , R  , L  ,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      ESC , A  , O  , E  , U  , I  ,                D  , H  , T  , N  , S  ,ENT ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     MAU5,UNDS, Q  , J  , K  , X  ,RASE,     LOCK, B  , M  , W  , V ,  Z  ,    ,
+         ,UNDS, Q  , J  , K  , X  ,MAU5,     RASE, B  , M  , W  , V ,  Z  ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
-                       LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
+                       LGUI,SHFT,SPC ,         LOWR,LCTL,LALT
+  //                  `----+----+----'        `----+----+----'
+  ),
+
+  [_SHIFT] = KC_KEYMAP(
+  //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
+         ,TOOA,EMAI,EARS,    ,    ,                   ,    ,    ,SMC1,PMC1,STMC,
+  //|----+----+----+----+----+----|              |----+----+----+----+----+----|
+         ,    ,QUES,EXLM,    ,    ,                   ,    ,    ,    ,    ,    ,
+  //|----+----+----+----+----+----|              |----+----+----+----+----+----|
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,    ,    ,
+  //|----+----+----+----+----+----+---.    ,----|----+----+----+----+----+----|
+         ,    ,    ,    ,    ,    ,    ,         ,    ,    ,    ,    ,    ,    ,
+  //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
+                           ,SHFT,    ,             ,    ,
   //                  `----+----+----'        `----+----+----'
   ),
 
@@ -53,11 +81,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
      F12 , F1 , F2 , F3 , F4 , F5 ,                F6 , F7 , F8 , F9 ,F10 ,F11 ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,    , AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,PIPE,EQL ,    ,
+         ,SCLN, AT ,HASH,DLR ,PERC,               CIRC,AMPR,ASTR,PIPE,EQL ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-     COLN,LCBR,LABK,LPRN,LBRC,SLSH,               BSLS,RBRC,RPRN,RABK,RCBR,SCLN,
+         ,LCBR,LABK,LPRN,LBRC,SLSH,               BSLS,RBRC,RPRN,RABK,RCBR,    ,
   //|----+----+----+----+----+----+---.    ,----|----+----+----+----+----+----|
-         ,EXLM,COMM,DOT ,QUES,TILD,    ,     LOCK,LEFT,DOWN, UP ,RGHT,GRV ,    ,
+         ,COLN,    ,PPLS,PMNS,TILD,    ,         ,LEFT,DOWN, UP ,RGHT,GRV ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                        LGUI,LSFT,SPC ,         LOWR,LCTL,LALT
   //                  `----+----+----'        `----+----+----'
@@ -71,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,    ,    ,    ,    ,               VOLD,MPRV,MPLY,MNXT,    ,    ,
   //|----+----+----+----+----+----+---.    ,----|----+----+----+----+----+----|
-         ,    ,    ,    ,    ,    ,RASE,         ,MUTE,    ,    ,    ,    ,    ,
+         ,    ,    ,    ,    ,    ,    ,     RASE,MUTE,    ,    ,    ,    ,    ,
   //`----+----+----+--+-+----+----+----/    \----+----+----+----+----+----+----'
                            ,    ,    ,             ,    ,
   //                  `----+----+----'        `----+----+----'
@@ -85,7 +113,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
       ESC, A  , S  , D  , F  , G  ,                   ,MS_L,MS_D,MS_U,MS_R,    ,
   //|----+----+----+----+----+----+----.    ,----|----+----+----+----+----+----|
-     MAU5, Z  , X  , C  , V  , B  , M  ,     LOCK,    ,    ,    ,    ,    ,    ,
+       M , Z  , X  , C  , V  , B  ,MAU5,         ,    ,    ,    ,    ,    ,    ,
   //`----+----+----+----+----+----+----/    \----+----+----+----+----+----+----'
                            ,LSFT,    ,         BTN1,BTN2,BTN3
   //                  `----+----+----'        `----+----+----'
@@ -110,6 +138,10 @@ void switch_to_layer(uint8_t layer, bool pressed) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (!process_record_dynamic_macro(keycode, record)) {
+    return false;
+  }
+
   switch (keycode) {
   case LOWER:
     switch_to_layer(_LOWER, record->event.pressed);
@@ -120,8 +152,33 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case MOUSE:
     switch_to_layer(_MOUSE, record->event.pressed);
     return false;
+  case SHIFT:
+    switch_to_layer(_SHIFT, record->event.pressed);
+
+    if (record->event.pressed) {
+      register_code(KC_LSFT);
+    } else {
+      unregister_code(KC_LSFT);
+    }
+
+    return false;
   case LOCK:
     lock_is_pressed = record->event.pressed;
+    return false;
+  case TOOA:
+    if (record->event.pressed) {
+      SEND_STRING("Have you tried turning it off and on again?");
+    }
+    return false;
+  case EMAI:
+    if (record->event.pressed) {
+      SEND_STRING("elimirks@gmail.com");
+    }
+    return false;
+  case EARS:
+    if (record->event.pressed) {
+      SEND_STRING("Just rip its fucking ears off!");
+    }
     return false;
   }
   return true;
