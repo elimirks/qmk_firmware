@@ -43,4 +43,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MOUSEKEY_TIME_TO_MAX 20
 #define MOUSEKEY_MAX_SPEED 20
 
+#define TAPPING_TOGGLE 2
+
 #endif

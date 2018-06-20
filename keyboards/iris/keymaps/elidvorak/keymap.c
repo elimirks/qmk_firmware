@@ -10,17 +10,9 @@ extern keymap_config_t keymap_config;
 #define _RAISE 4
 #define _MOUSE 8
 
-// Set to _ALPHA when no layer button is pressed
-static uint8_t pressed_layer = _ALPHA;
-static bool lock_is_pressed  = false;
-
 enum custom_keycodes {
   ALPHA = SAFE_RANGE,
   SHIFT,
-  LOWER,
-  RAISE,
-  MOUSE,
-  LOCK, // For locking layers
   TOOA,
   EMAI,
   EARS,
@@ -31,11 +23,10 @@ enum custom_keycodes {
 
 #define TRNS KC_TRNS
 #define KC_ KC_TRNS
-#define KC_LOWR LOWER
 #define KC_SHFT SHIFT
-#define KC_RASE RAISE
-#define KC_MAU5 MOUSE
-#define KC_LOCK LOCK
+#define KC_LOWR MO(_LOWER)
+#define KC_RASE MO(_RAISE)
+#define KC_MAU5 TT(_MOUSE)
 #define KC_TOOA TOOA
 #define KC_EMAI EMAI
 #define KC_EARS EARS
@@ -43,15 +34,11 @@ enum custom_keycodes {
 #define KC_PMC1 DYN_MACRO_PLAY1
 #define KC_STMC DYN_REC_STOP
 
-/* TODO
- * http://www.openstenoproject.org/ LEARN STENOGRAPHY
- */
-
-// Referenc: https://docs.qmk.fm/keycodes.html
+// Reference: https://docs.qmk.fm/keycodes.html
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_ALPHA] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,LOCK,
+         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      TAB ,QUOT,COMM,DOT , P  , Y  ,                F  , G  , C  , R  , L  ,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
@@ -128,12 +115,8 @@ void persistent_default_layer_set(uint16_t default_layer) {
 void switch_to_layer(uint8_t layer, bool pressed) {
   if (pressed) {
     layer_on(layer);
-    pressed_layer = layer;
   } else {
-    if (!lock_is_pressed) {
-      layer_off(layer);
-      pressed_layer = _ALPHA;
-    }
+    layer_off(layer);
   }
 }
 
@@ -143,15 +126,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-  case LOWER:
-    switch_to_layer(_LOWER, record->event.pressed);
-    return false;
-  case RAISE:
-    switch_to_layer(_RAISE, record->event.pressed);
-    return false;
-  case MOUSE:
-    switch_to_layer(_MOUSE, record->event.pressed);
-    return false;
   case SHIFT:
     switch_to_layer(_SHIFT, record->event.pressed);
 
@@ -161,9 +135,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       unregister_code(KC_LSFT);
     }
 
-    return false;
-  case LOCK:
-    lock_is_pressed = record->event.pressed;
     return false;
   case TOOA:
     if (record->event.pressed) {
