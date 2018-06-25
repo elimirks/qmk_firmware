@@ -121,6 +121,10 @@ void switch_to_layer(uint8_t layer, bool pressed) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (action_for_key(_SHIFT, record->event.key).code != ACTION_TRANSPARENT) {
+    unregister_code(KC_LSFT);
+  }
+
   if (!process_record_dynamic_macro(keycode, record)) {
     return false;
   }
