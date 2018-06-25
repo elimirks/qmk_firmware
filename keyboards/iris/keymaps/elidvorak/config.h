@@ -45,4 +45,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define TAPPING_TOGGLE 2
 
+#define PREVENT_STUCK_MODIFIERS
+
 #endif
