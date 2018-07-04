@@ -22,13 +22,25 @@
 // The following is an example using the Planck MIT layout
 // The first section contains all of the arguments
 // The second converts the arguments into a two-dimensional array
+// Reference: http://members.casema.nl/hhaydn/howel/logic/burched/b5_800xl_kbd.htm
 #define KEYMAP( \
-    k00, k01, k02, \
-      k10,  k11   \
+	k10, k11, k12, k13, k14, k15, k17, k07, k05, k04, k03, k02, k01, k00, k08, \
+	k30, k31, k32, k33, k34, k35, k37, k27, k25, k24, k23, k22, k21, k20,      \
+	k48, k51, k52, k53, k54, k55, k56, k46, k45, k44, k43, k42, k41, k50,      \
+	k78, k71, k72, k73, k74, k75, k67, k65, k64, k63, k62,      k61,           \
+													 k66,         k76                                  \
 ) \
 { \
-    { k00, k01,   k02 }, \
-    { k10, KC_NO, k11 }, \
+  { k00,   k01, k02, k03, k04, k05, KC_NO, k07,   k08   }, \
+  { k10,   k11, k12, k13, k14, k15, KC_NO, k17,   KC_NO }, \
+  { k20,   k21, k22, k23, k24, k25, KC_NO, k27,   KC_NO }, \
+  { k30,   k31, k32, k33, k34, k35, KC_NO, k37,   KC_NO }, \
+  { KC_NO, k41, k42, k43, k44, k45, k46,   KC_NO, k48   }, \
+  { k50,   k51, k52, k53, k54, k55, k56,   KC_NO, KC_NO }, \
+  { KC_NO, k61, k62, k63, k64, k65, k66,   k67,   KC_NO }, \
+  { KC_NO, k71, k72, k73, k74, k75, k76,   KC_NO, k78   }  \
 }
 
 #endif
+
+     
