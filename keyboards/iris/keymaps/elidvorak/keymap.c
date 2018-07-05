@@ -16,6 +16,7 @@ enum custom_keycodes {
   TOOA,
   EMAI,
   EARS,
+  FISH,
   DYNAMIC_MACRO_RANGE,
 };
 
@@ -30,6 +31,7 @@ enum custom_keycodes {
 #define KC_TOOA TOOA
 #define KC_EMAI EMAI
 #define KC_EARS EARS
+#define KC_FISH FISH
 #define KC_SMC1 DYN_REC_START1
 #define KC_PMC1 DYN_MACRO_PLAY1
 #define KC_STMC DYN_REC_STOP
@@ -52,7 +54,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [_SHIFT] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         ,TOOA,EMAI,EARS,    ,    ,                   ,    ,    ,SMC1,PMC1,STMC,
+         ,TOOA,EMAI,EARS,FISH,    ,                   ,    ,    ,SMC1,PMC1,STMC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,QUES,EXLM,    ,    ,                   ,    ,    ,    ,    ,    ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
@@ -153,6 +155,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case EARS:
     if (record->event.pressed) {
       SEND_STRING("Just rip its fucking ears off!");
+    }
+    return false;
+  case FISH:
+    if (record->event.pressed) {
+      SEND_STRING("'~,.,~''~,.,~'  '~,.,~''~,.,~'");
+      for (int i = 0; i < 15; i++) {
+        SEND_STRING(SS_TAP(X_LEFT));
+      }
     }
     return false;
   }
