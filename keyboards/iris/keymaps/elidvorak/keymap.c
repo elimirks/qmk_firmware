@@ -171,20 +171,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 void led_set_user(uint8_t usb_led) {
   rgblight_mode(1);
-  rgblight_setrgb_at(0, 255, 0, 0);
-  rgblight_setrgb_at(0, 255, 0, 1);
-  rgblight_setrgb_at(0, 255, 0, 2);
-  rgblight_setrgb_at(0, 255, 0, 3);
-  rgblight_setrgb_at(0, 255, 0, 4);
-  rgblight_setrgb_at(0, 255, 0, 5);
-  rgblight_setrgb_at(0, 255, 0, 6);
 
-  rgblight_setrgb_at(0, 0, 255, 7);
-  rgblight_setrgb_at(0, 0, 255, 8);
-  rgblight_setrgb_at(0, 0, 255, 9);
-  rgblight_setrgb_at(0, 0, 255, 10);
-  rgblight_setrgb_at(0, 0, 255, 11);
-  rgblight_setrgb_at(0, 0, 255, 12);
-  rgblight_setrgb_at(0, 0, 255, 13);
-  rgblight_setrgb_at(0, 0, 255, 14);
+  // Should be at most 255 / 7 (~36)
+  const unsigned int grad_magnitude = 30;
+
+  // Left side
+  for (unsigned int i = 0; i <= 6; i++) {
+    unsigned int x = 6 - i;
+    rgblight_setrgb_at(x * grad_magnitude, 255 - x * grad_magnitude, 0, i);
+  }
+
+  // Right side
+  for (unsigned int i = 7; i <= 14; i++) {
+    unsigned int x = i - 7;
+    rgblight_setrgb_at(x * grad_magnitude, 0, 255 - x * grad_magnitude, i);
+  }
 }
