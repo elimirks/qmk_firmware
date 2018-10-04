@@ -17,6 +17,7 @@ enum custom_keycodes {
   EMAI,
   EARS,
   FISH,
+  PANI,
   DYNAMIC_MACRO_RANGE,
 };
 
@@ -32,6 +33,7 @@ enum custom_keycodes {
 #define KC_EMAI EMAI
 #define KC_EARS EARS
 #define KC_FISH FISH
+#define KC_PANI PANI
 #define KC_SMC1 DYN_REC_START1
 #define KC_PMC1 DYN_MACRO_PLAY1
 #define KC_STMC DYN_REC_STOP
@@ -44,7 +46,7 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_ALPHA] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,    ,
+         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,PANI,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      TAB ,QUOT,COMM,DOT , P  , Y  ,                F  , G  , C  , R  , L  ,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
@@ -163,6 +165,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       for (int i = 0; i < 15; i++) {
         SEND_STRING(SS_TAP(X_LEFT));
       }
+    }
+    return false;
+  case PANI:
+    if (record->event.pressed) {
+      SEND_STRING("DON'T PANIC");
     }
     return false;
   }
