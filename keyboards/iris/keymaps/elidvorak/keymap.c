@@ -169,7 +169,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return false;
   case PANI:
     if (record->event.pressed) {
-      SEND_STRING("DON'T PANIC");
+      SEND_STRING("At the Disco");
     }
     return false;
   }
