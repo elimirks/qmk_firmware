@@ -74,7 +74,9 @@
  * http://www.fourwalledcubicle.com/files/LUFA/Doc/120730/html/_page__software_bootloader_start.html
  */
 #define BOOTLOADER_RESET_KEY 0xB007B007
-uint32_t reset_key  __attribute__ ((section (".noinit")));
+//uint32_t reset_key  __attribute__ ((section (".noinit")));
+// Patch from https://www.reddit.com/r/olkb/comments/94duwj/issue_flashing_lets_split/
+uint32_t reset_key __attribute__ ((section (".noinit,\"aw\",@nobits;")));
 
 /* initialize MCU status by watchdog reset */
 void bootloader_jump(void) {
@@ -82,7 +84,7 @@ void bootloader_jump(void) {
     #if !defined(BOOTLOADER_SIZE)
         uint8_t high_fuse = boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS);
 
-        if (high_fuse & BOOT_SIZE_256) { 
+        if (high_fuse & BOOT_SIZE_256) {
             bootloader_start = (FLASH_SIZE - 512) >> 1;
         } else if (high_fuse & BOOT_SIZE_512) {
             bootloader_start = (FLASH_SIZE - 1024) >> 1;
@@ -131,7 +133,7 @@ void bootloader_jump(void) {
             DDRA = 0; DDRB = 0; DDRC = 0; DDRD = 0; DDRE = 0; DDRF = 0;
             PORTA = 0; PORTB = 0; PORTC = 0; PORTD = 0; PORTE = 0; PORTF = 0;
             asm volatile("jmp 0x1FC00");
-        #endif 
+        #endif
 
     #elif defined(BOOTLOADER_CATERINA)
         // this block may be optional
