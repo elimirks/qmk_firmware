@@ -4,6 +4,8 @@
 
 extern keymap_config_t keymap_config;
 
+#define KC_CAD LALT(LCTL(KC_DEL))
+
 #define _ALPHA 0
 #define _SHIFT 1
 #define _LOWER 2
@@ -17,7 +19,6 @@ enum custom_keycodes {
   EMAI,
   EARS,
   FISH,
-  PANI,
   DYNAMIC_MACRO_RANGE,
 };
 
@@ -33,7 +34,6 @@ enum custom_keycodes {
 #define KC_EMAI EMAI
 #define KC_EARS EARS
 #define KC_FISH FISH
-#define KC_PANI PANI
 #define KC_SMC1 DYN_REC_START1
 #define KC_PMC1 DYN_MACRO_PLAY1
 #define KC_STMC DYN_REC_STOP
@@ -46,7 +46,7 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_ALPHA] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         , 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,PANI,
+     RCTL, 1  , 2  , 3  , 4  , 5  ,                6  , 7  , 8  , 9  , 0  ,CAD ,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
      TAB ,QUOT,COMM,DOT , P  , Y  ,                F  , G  , C  , R  , L  ,BSPC,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
@@ -85,9 +85,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [_RAISE] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         ,    ,    ,    ,    ,    ,                   ,    ,    ,    ,HOME,PGUP,
+         ,    ,    ,    ,    ,    ,                   ,    ,    ,INS ,HOME,PGUP,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
-         ,    ,SMC1,PMC1,STMC,    ,               VOLU,    ,MSTP,    ,END ,PGDN,
+         ,    ,SMC1,PMC1,STMC,    ,               VOLU,    ,MSTP,DEL ,END ,PGDN,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,TOOA,EMAI,EARS,FISH,    ,               VOLD,MPRV,MPLY,MNXT,    ,    ,
   //|----+----+----+----+----+----+---.     ,----|----+----+----+----+----+----|
@@ -167,18 +167,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     }
     return false;
-  case PANI:
-    if (record->event.pressed) {
-      SEND_STRING("At the Disco");
-    }
-    return false;
   }
   return true;
 }
 
-void led_set_user(uint8_t usb_led) {
-  rgblight_mode(1);
-
+void led_set_grad_left_green(void) {
   // Should be at most 255 / 7 (~36)
   const unsigned int grad_magnitude = 30;
 
@@ -187,10 +180,33 @@ void led_set_user(uint8_t usb_led) {
     unsigned int x = 6 - i;
     rgblight_setrgb_at(x * grad_magnitude, 255 - x * grad_magnitude, 0, i);
   }
+}
 
-  // Right side
-  for (unsigned int i = 7; i <= 14; i++) {
-    unsigned int x = i - 7;
-    rgblight_setrgb_at(x * grad_magnitude, 0, 255 - x * grad_magnitude, i);
+void led_set_user(uint8_t usb_led) {
+  // Constant values - no pulsing or anything
+  rgblight_mode(1);
+
+  if (IS_LAYER_ON(_MOUSE)) {
+    led_set_grad_left_green();
+
+    // Should be at most 255 / 7 (~36)
+    const unsigned int grad_magnitude = 30;
+
+    // Right side
+    for (unsigned int i = 7; i <= 14; i++) {
+      unsigned int x = i - 7;
+      rgblight_setrgb_at(x * grad_magnitude, 255 - x * grad_magnitude, 0, i);
+    }
+  } else {
+    led_set_grad_left_green();
+
+    // Should be at most 255 / 7 (~36)
+    const unsigned int grad_magnitude = 30;
+
+    // Right side
+    for (unsigned int i = 7; i <= 14; i++) {
+      unsigned int x = i - 7;
+      rgblight_setrgb_at(x * grad_magnitude, 0, 255 - x * grad_magnitude, i);
+    }
   }
 }
