@@ -4,6 +4,8 @@
 
 extern keymap_config_t keymap_config;
 
+uint8_t underglow_enabled = 1;
+
 #define KC_CAD LALT(LCTL(KC_DEL))
 
 #define _ALPHA 0
@@ -19,6 +21,7 @@ enum custom_keycodes {
   EMAI,
   EARS,
   FISH,
+  TRGB, // Toggle RGB underglow
   DYNAMIC_MACRO_RANGE,
 };
 
@@ -34,6 +37,7 @@ enum custom_keycodes {
 #define KC_EMAI EMAI
 #define KC_EARS EARS
 #define KC_FISH FISH
+#define KC_TRGB TRGB
 #define KC_SMC1 DYN_REC_START1
 #define KC_PMC1 DYN_MACRO_PLAY1
 #define KC_STMC DYN_REC_STOP
@@ -85,7 +89,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [_RAISE] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-         ,    ,    ,    ,    ,    ,                   ,    ,    ,INS ,HOME,PGUP,
+     TRGB,    ,    ,    ,    ,    ,                   ,    ,    ,INS ,HOME,PGUP,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,SMC1,PMC1,STMC,    ,               VOLU,    ,MSTP,DEL ,END ,PGDN,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
@@ -167,6 +171,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
     }
     return false;
+  case TRGB:
+    if (record->event.pressed) {
+      underglow_enabled = ! underglow_enabled;
+    }
+    return false;
   }
   return true;
 }
@@ -182,9 +191,20 @@ void led_set_grad_left_green(void) {
   }
 }
 
+void disable_underglow(void) {
+    for (unsigned int i = 0; i <= 14; i++) {
+      rgblight_setrgb_at(0, 0, 0, i);
+    }
+}
+
 void led_set_user(uint8_t usb_led) {
   // Constant values - no pulsing or anything
   rgblight_mode(1);
+
+  if ( ! underglow_enabled) {
+    disable_underglow();
+    return;
+  }
 
   if (IS_LAYER_ON(_MOUSE)) {
     led_set_grad_left_green();
