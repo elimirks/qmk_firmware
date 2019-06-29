@@ -5,6 +5,13 @@
 extern keymap_config_t keymap_config;
 
 uint8_t underglow_enabled = 1;
+//uint8_t vbox_mediakeys_enabled = 0;
+// FIXME: default for testing
+uint8_t vbox_mediakeys_enabled = 0;
+
+#define SS_DOWN_MEH() SS_DOWN(X_LCTRL)SS_DOWN(X_LALT)SS_DOWN(X_LGUI)
+#define SS_UP_MEH() SS_UP(X_LCTRL)SS_UP(X_LALT)SS_UP(X_LGUI)
+#define SS_MEH(kc) SS_DOWN_MEH()SS_TAP(kc)SS_UP_MEH()
 
 #define KC_CAD LALT(LCTL(KC_DEL))
 
@@ -22,6 +29,7 @@ enum custom_keycodes {
   EARS,
   FISH,
   TRGB, // Toggle RGB underglow
+  TVBX, // Toggle VirtualBox media keys
   DYNAMIC_MACRO_RANGE,
 };
 
@@ -38,6 +46,7 @@ enum custom_keycodes {
 #define KC_EARS EARS
 #define KC_FISH FISH
 #define KC_TRGB TRGB
+#define KC_TVBX TVBX
 #define KC_SMC1 DYN_REC_START1
 #define KC_PMC1 DYN_MACRO_PLAY1
 #define KC_STMC DYN_REC_STOP
@@ -89,7 +98,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
   [_RAISE] = KC_KEYMAP(
   //,----+----+----+----+----+----.              ,----+----+----+----+----+----.
-     TRGB,    ,    ,    ,    ,    ,                   ,    ,    ,INS ,HOME,PGUP,
+     TRGB,TVBX,    ,    ,    ,    ,                   ,    ,    ,INS ,HOME,PGUP,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
          ,    ,SMC1,PMC1,STMC,    ,               VOLU,    ,MSTP,DEL ,END ,PGDN,
   //|----+----+----+----+----+----|              |----+----+----+----+----+----|
@@ -176,6 +185,48 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       underglow_enabled = ! underglow_enabled;
     }
     return false;
+  case TVBX:
+    if (record->event.pressed) {
+      vbox_mediakeys_enabled = ! vbox_mediakeys_enabled;
+    }
+    return false;
+  // Intercept media keys for VirtualBox
+  case KC_MPLY:
+    if (record->event.pressed && vbox_mediakeys_enabled) {
+      SEND_STRING(SS_MEH(X_A));
+      return false;
+    }
+    break;
+  case KC_MSTP:
+    if (record->event.pressed && vbox_mediakeys_enabled) {
+      SEND_STRING(SS_MEH(X_B));
+      return false;
+    }
+    break;
+  case KC_MNXT:
+    if (record->event.pressed && vbox_mediakeys_enabled) {
+      SEND_STRING(SS_MEH(X_C));
+      return false;
+    }
+    break;
+  case KC_MPRV:
+    if (record->event.pressed && vbox_mediakeys_enabled) {
+      SEND_STRING(SS_MEH(X_D));
+      return false;
+    }
+    break;
+  case KC_VOLU:
+    if (record->event.pressed && vbox_mediakeys_enabled) {
+      SEND_STRING(SS_MEH(X_E));
+      return false;
+    }
+    break;
+  case KC_VOLD:
+    if (record->event.pressed && vbox_mediakeys_enabled) {
+      SEND_STRING(SS_MEH(X_F));
+      return false;
+    }
+    break;
   }
   return true;
 }
@@ -213,7 +264,7 @@ void led_set_user(uint8_t usb_led) {
     const unsigned int grad_magnitude = 30;
 
     // Right side
-    for (unsigned int i = 7; i <= 14; i++) {
+    for (unsigned int i = 7; i <= 13; i++) {
       unsigned int x = i - 7;
       rgblight_setrgb_at(x * grad_magnitude, 255 - x * grad_magnitude, 0, i);
     }
@@ -224,9 +275,14 @@ void led_set_user(uint8_t usb_led) {
     const unsigned int grad_magnitude = 30;
 
     // Right side
-    for (unsigned int i = 7; i <= 14; i++) {
+    for (unsigned int i = 7; i <= 13; i++) {
       unsigned int x = i - 7;
       rgblight_setrgb_at(x * grad_magnitude, 0, 255 - x * grad_magnitude, i);
     }
+  }
+
+  // Rightmost LED set to red, to indicate mediakeys mode is toggled
+  if (vbox_mediakeys_enabled) {
+    rgblight_setrgb_at(255, 0, 0, 13);
   }
 }
