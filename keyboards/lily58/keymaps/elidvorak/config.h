@@ -38,8 +38,10 @@
 
 #pragma once
 
-#define QUICK_TAP_TERM 0
-#define TAPPING_TERM 100
+// Mod tap settings
+#define QUICK_TAP_TERM 200
+#define TAPPING_TERM 500
+#define TAPPING_TOGGLE 2
 
 #undef RGBLIGHT_LED_COUNT
 #define RGBLIGHT_EFFECT_BREATHING
@@ -57,3 +59,10 @@
 #define RGBLIGHT_HUE_STEP 10
 #define RGBLIGHT_SAT_STEP 17
 #define RGBLIGHT_VAL_STEP 17
+
+// Make mouse keys usable
+#define MOUSEKEY_DELAY 0
+#define MOUSEKEY_TIME_TO_MAX 60
+#define MOUSEKEY_MAX_SPEED 8
+
+#define PREVENT_STUCK_MODIFIERS
