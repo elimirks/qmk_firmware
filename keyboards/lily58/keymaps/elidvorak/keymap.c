@@ -6,8 +6,8 @@
 //
 
 enum layer_number {
-    _ALPHA = 0,
-    _SHIFT,
+    //_ALPHA = 0,
+    _ALPHA_PRIME = 0,
     _LOWER,
     _RAISE,
     _MOUSE,
@@ -22,7 +22,6 @@ enum custom_keycodes {
 };
 
 #define EL_CAD  LALT(LCTL(KC_DEL))
-#define EL_SHFT SHIFT_LAYER
 // Layer virtual "keycodes"
 #define TT_MAU5 TT(_MOUSE)
 #define MO_RASE MO(_RAISE)
@@ -30,32 +29,47 @@ enum custom_keycodes {
 
 // https://github.com/qmk/qmk_firmware/blob/master/docs/tap_hold.md
 
-#define MT_O MT(MOD_LGUI, KC_O)
-#define MT_E MT(MOD_LALT, KC_E)
-#define MT_U MT(MOD_LCTL, KC_U)
+#define MT_TAB  MT(MOD_LALT, KC_TAB)
+#define MT_ESC  MT(MOD_LCTL, KC_ESC)
+#define MT_BSPC MT(MOD_RALT, KC_BSPC)
+#define MT_ENT  MT(MOD_RCTL, KC_ENT)
 
-#define MT_H MT(MOD_RCTL, KC_H)
-#define MT_T MT(MOD_RALT, KC_T)
-#define MT_N MT(MOD_RGUI, KC_N)
+#define MT_COMM MT(MOD_LALT, KC_COMM)
+#define MT_DOT  MT(MOD_LCTL, KC_DOT)
+#define MT_C MT(MOD_RCTL, KC_C)
+#define MT_R MT(MOD_RALT, KC_R)
+
+#define MT_P MT(MOD_LCTL, KC_P)
+#define MT_Y  MT(MOD_LALT, KC_Y)
+#define MT_F MT(MOD_RALT, KC_F)
+#define MT_G MT(MOD_RCTL, KC_G)
+
+const key_override_t key_override_comm = ko_make_basic(MOD_MASK_SHIFT, KC_COMM, KC_QUES);
+const key_override_t key_override_dot = ko_make_basic(MOD_MASK_SHIFT, KC_DOT, KC_EXLM);
+
+const key_override_t *key_overrides[] = {
+    &key_override_comm,
+    &key_override_dot,
+};
 
 // ----------------------------------------------------
 // Mapping
 // ----------------------------------------------------
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-[_ALPHA] = LAYOUT(
+// [_ALPHA] = LAYOUT(
+//   _______, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    EL_CAD,
+//   MT_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                      KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    MT_BSPC,
+//   MT_ESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                      KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    MT_ENT,
+//   _______, KC_UNDS, KC_Q,    KC_J,    KC_K,    KC_X,    TT_MAU5, MO_RASE, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    _______,
+//                              _______, KC_LGUI, KC_LSFT, KC_SPC,  MO_LOWR, KC_LCTL, KC_LALT, _______
+// ),
+[_ALPHA_PRIME] = LAYOUT(
   _______, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    EL_CAD,
-  KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                      KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
+  KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  MT_P,    MT_Y,                      MT_F,    MT_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
   KC_ESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                      KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_ENT,
   _______, KC_UNDS, KC_Q,    KC_J,    KC_K,    KC_X,    TT_MAU5, MO_RASE, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    _______,
-                             _______, KC_LGUI, EL_SHFT, KC_SPC,  MO_LOWR, KC_LCTL, KC_LALT, _______
-),
-[_SHIFT] = LAYOUT(
-  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
-  _______, _______, KC_QUES, KC_EXLM, _______, _______,                   _______, _______, _______, _______, _______, _______,
-  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
-                             _______, _______, EL_SHFT, _______, _______, _______, _______, _______
+                             _______, KC_LGUI, KC_LSFT, KC_SPC,  MO_LOWR, KC_LCTL, KC_LALT, _______
 ),
 [_LOWER] = LAYOUT(
   KC_F12,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
@@ -84,82 +98,17 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
-void switch_to_layer(uint8_t layer, bool pressed) {
-    if (pressed) {
-        layer_on(layer);
-    } else {
-        layer_off(layer);
-    }
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case SHIFT_LAYER:
-            switch_to_layer(_SHIFT, record->event.pressed);
-
-            if (record->event.pressed) {
-                register_code(KC_LSFT);
-            } else {
-                if (action_for_key(_SHIFT, record->event.key).code != ACTION_TRANSPARENT) {
-                    unregister_code(KC_LSFT);
-                }
-            }
-            return false;
-    }
     return true;
 }
 
 // ----------------------------------------------------
-// Steno(ish)
+// Steno
 // ----------------------------------------------------
 
 #define VOCAB_LIST\
     VOCAB_ENTRY(dash,     "--",       KC_MINS, KC_UNDS)\
     VOCAB_ENTRY(the,      "the",      KC_T, KC_H, KC_E)\
-    VOCAB_ENTRY(ing,      "ing",      KC_I, KC_N, KC_G)\
-    VOCAB_ENTRY(out,      "out",      KC_O, KC_U, KC_T)\
-    VOCAB_ENTRY(wha,      "wha",      KC_W, KC_H, KC_A)\
-    VOCAB_ENTRY(and,      "and",      KC_A, KC_N, KC_D)\
-    VOCAB_ENTRY(ion,      "ion",      KC_I, KC_O, KC_N)\
-    VOCAB_ENTRY(her,      "her",      KC_H, KC_E, KC_R)\
-    VOCAB_ENTRY(for,      "for",      KC_F, KC_O, KC_R)\
-    VOCAB_ENTRY(tha,      "tha",      KC_T, KC_H, KC_A)\
-    VOCAB_ENTRY(tio,      "tio",      KC_T, KC_I, KC_O)\
-    VOCAB_ENTRY(ent,      "ent",      KC_E, KC_N, KC_T)\
-    VOCAB_ENTRY(ati,      "ati",      KC_A, KC_T, KC_I)\
-    VOCAB_ENTRY(his,      "his",      KC_H, KC_I, KC_S)\
-    VOCAB_ENTRY(thi,      "thi",      KC_T, KC_H, KC_I)\
-    VOCAB_ENTRY(pre,      "pre",      KC_P, KC_R, KC_E)\
-    VOCAB_ENTRY(whi,      "whi",      KC_W, KC_H, KC_I)\
-    VOCAB_ENTRY(ter,      "ter",      KC_T, KC_E, KC_R)\
-    VOCAB_ENTRY(ate,      "ate",      KC_A, KC_T, KC_E)\
-    VOCAB_ENTRY(con,      "con",      KC_C, KC_O, KC_N)\
-    VOCAB_ENTRY(res,      "res",      KC_R, KC_E, KC_S)\
-    VOCAB_ENTRY(has,      "has",      KC_H, KC_A, KC_S)\
-    VOCAB_ENTRY(est,      "est",      KC_E, KC_S, KC_T)\
-    VOCAB_ENTRY(can,      "can",      KC_C, KC_A, KC_N)\
-    VOCAB_ENTRY(cha,      "cha",      KC_C, KC_H, KC_A)\
-    VOCAB_ENTRY(nce,      "nce",      KC_N, KC_C, KC_E)\
-    VOCAB_ENTRY(git,      "git",      KC_G, KC_I, KC_T)\
-    VOCAB_ENTRY(tion,     "tion",     KC_T, KC_I, KC_O, KC_N)\
-    VOCAB_ENTRY(ther,     "ther",     KC_T, KC_H, KC_E, KC_R)\
-    VOCAB_ENTRY(ment,     "ment",     KC_M, KC_E, KC_N, KC_T)\
-    VOCAB_ENTRY(this,     "this",     KC_T, KC_H, KC_I, KC_S)\
-    VOCAB_ENTRY(ould,     "ould",     KC_O, KC_U, KC_L, KC_D)\
-    VOCAB_ENTRY(have,     "have",     KC_H, KC_A, KC_V, KC_E)\
-    VOCAB_ENTRY(when,     "when",     KC_W, KC_H, KC_E, KC_N)\
-    VOCAB_ENTRY(ance,     "ance",     KC_A, KC_N, KC_C, KC_E)\
-    VOCAB_ENTRY(ence,     "ence",     KC_E, KC_N, KC_C, KC_E)\
-    VOCAB_ENTRY(able,     "able",     KC_A, KC_B, KC_L, KC_E)\
-    VOCAB_ENTRY(ator,     "ator",     KC_A, KC_T, KC_O, KC_R)\
-    VOCAB_ENTRY(ates,     "ates",     KC_A, KC_T, KC_E, KC_S)\
-    VOCAB_ENTRY(ouse,     "ouse",     KC_O, KC_U, KC_S, KC_E)\
-    VOCAB_ENTRY(sent,     "sent",     KC_S, KC_E, KC_N, KC_T)\
-    VOCAB_ENTRY(base,     "base",     KC_B, KC_A, KC_S, KC_E)\
-    VOCAB_ENTRY(some,     "some",     KC_S, KC_O, KC_M, KC_E)\
-    VOCAB_ENTRY(once,     "once",     KC_O, KC_N, KC_C, KC_E)\
-    VOCAB_ENTRY(just,     "just",     KC_J, KC_U, KC_S, KC_T)\
-    VOCAB_ENTRY(most,     "most",     KC_M, KC_O, KC_S, KC_T)\
 
 
 // Helper macros to count the number of arguments
