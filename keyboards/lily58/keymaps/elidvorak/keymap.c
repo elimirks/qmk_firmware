@@ -46,7 +46,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ALPHA] = LAYOUT(
   _______, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    EL_CAD,
   KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                      KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
-  KC_ESC,  KC_A,    KC_O,    MT_E,    MT_U,    KC_I,                      KC_D,    MT_H,    MT_T,    MT_N,    KC_S,    KC_ENT,
+  KC_ESC,  KC_A,    KC_O,    KC_E,    MT_U,    KC_I,                      KC_D,    MT_H,    MT_T,    MT_N,    KC_S,    KC_ENT,
   _______, KC_UNDS, KC_Q,    KC_J,    KC_K,    KC_X,    TT_MAU5, MO_RASE, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    _______,
                              _______, KC_LGUI, EL_SHFT, KC_SPC,  MO_LOWR, KC_LCTL, KC_LALT, _______
 ),
@@ -93,13 +93,6 @@ void switch_to_layer(uint8_t layer, bool pressed) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    if (record->event.pressed) {
-        // set_timelog();
-    }
-    if (action_for_key(_SHIFT, record->event.key).code != ACTION_TRANSPARENT) {
-        unregister_code(KC_LSFT);
-    }
-
     switch (keycode) {
         case SHIFT_LAYER:
             switch_to_layer(_SHIFT, record->event.pressed);
@@ -107,7 +100,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 register_code(KC_LSFT);
             } else {
-                unregister_code(KC_LSFT);
+                if (action_for_key(_SHIFT, record->event.key).code != ACTION_TRANSPARENT) {
+                    unregister_code(KC_LSFT);
+                }
             }
             return false;
     }

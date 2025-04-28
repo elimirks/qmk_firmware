@@ -39,8 +39,8 @@
 #pragma once
 
 // Mod tap settings
-#define QUICK_TAP_TERM 200
-#define TAPPING_TERM 500
+#define QUICK_TAP_TERM 100
+#define TAPPING_TERM 200
 #define TAPPING_TOGGLE 2
 
 #undef RGBLIGHT_LED_COUNT
