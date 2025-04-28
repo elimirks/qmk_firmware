@@ -38,44 +38,6 @@ enum custom_keycodes {
 #define MT_T MT(MOD_RALT, KC_T)
 #define MT_N MT(MOD_RGUI, KC_N)
 
-/*
-enum combo_events {
-    COMBO_email,
-    COMBO_the,
-    COMBO_about,
-};
-
-const uint16_t PROGMEM combo_email[] = {KC_E, KC_M, COMBO_END};
-const uint16_t PROGMEM combo_the[] = {KC_T, KC_H, COMBO_END};
-const uint16_t PROGMEM combo_about[] = {KC_A, KC_B, COMBO_END};
-
-combo_t key_combos[] = {
-    [COMBO_email] = COMBO_ACTION(combo_email),
-    [COMBO_the] = COMBO_ACTION(combo_the),
-    [COMBO_about] = COMBO_ACTION(combo_about),
-};
-
-void process_combo_event(uint16_t combo_index, bool pressed) {
-    switch (combo_index) {
-        case COMBO_email:
-            if (pressed) {
-                SEND_STRING("email");
-                break;
-            }
-        case COMBO_the:
-            if (pressed) {
-                SEND_STRING("the");
-                break;
-            }
-        case COMBO_about:
-            if (pressed) {
-                SEND_STRING("about");
-                break;
-            }
-    }
-}
-*/
-
 // ----------------------------------------------------
 // Mapping
 // ----------------------------------------------------
@@ -152,6 +114,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 // ----------------------------------------------------
 
 #define VOCAB_LIST\
+    VOCAB_ENTRY(dash,     "--",       KC_MINS, KC_UNDS)\
     VOCAB_ENTRY(the,      "the",      KC_T, KC_H, KC_E)\
     VOCAB_ENTRY(ing,      "ing",      KC_I, KC_N, KC_G)\
     VOCAB_ENTRY(out,      "out",      KC_O, KC_U, KC_T)\
@@ -174,6 +137,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     VOCAB_ENTRY(res,      "res",      KC_R, KC_E, KC_S)\
     VOCAB_ENTRY(has,      "has",      KC_H, KC_A, KC_S)\
     VOCAB_ENTRY(est,      "est",      KC_E, KC_S, KC_T)\
+    VOCAB_ENTRY(can,      "can",      KC_C, KC_A, KC_N)\
+    VOCAB_ENTRY(cha,      "cha",      KC_C, KC_H, KC_A)\
+    VOCAB_ENTRY(nce,      "nce",      KC_N, KC_C, KC_E)\
+    VOCAB_ENTRY(git,      "git",      KC_G, KC_I, KC_T)\
     VOCAB_ENTRY(tion,     "tion",     KC_T, KC_I, KC_O, KC_N)\
     VOCAB_ENTRY(ther,     "ther",     KC_T, KC_H, KC_E, KC_R)\
     VOCAB_ENTRY(ment,     "ment",     KC_M, KC_E, KC_N, KC_T)\
@@ -189,6 +156,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     VOCAB_ENTRY(ouse,     "ouse",     KC_O, KC_U, KC_S, KC_E)\
     VOCAB_ENTRY(sent,     "sent",     KC_S, KC_E, KC_N, KC_T)\
     VOCAB_ENTRY(base,     "base",     KC_B, KC_A, KC_S, KC_E)\
+    VOCAB_ENTRY(some,     "some",     KC_S, KC_O, KC_M, KC_E)\
+    VOCAB_ENTRY(once,     "once",     KC_O, KC_N, KC_C, KC_E)\
+    VOCAB_ENTRY(just,     "just",     KC_J, KC_U, KC_S, KC_T)\
+    VOCAB_ENTRY(most,     "most",     KC_M, KC_O, KC_S, KC_T)\
 
 
 // Helper macros to count the number of arguments
@@ -200,40 +171,35 @@ enum combo_events {
 #define VOCAB_ENTRY(NAME, STRING, ...)  COMBO_##NAME,
     VOCAB_LIST
 #undef VOCAB_ENTRY
+    COMBO_PARENS,
+    COMBO_BRACES,
+    COMBO_BRACKETS,
+    COMBO_ANGLES,
 };
 
 // 2. Key arrays - create array named combo_<name> for each, with variable length
 #define MAKE_KEY_ARRAY(NAME, STRING, ...) \
     const uint16_t PROGMEM combo_##NAME[] = { __VA_ARGS__, COMBO_END };
 
+const uint16_t PROGMEM combo_PARENS[] = { KC_LPRN, KC_RPRN, COMBO_END };
+const uint16_t PROGMEM combo_BRACES[] = { KC_LCBR, KC_RCBR, COMBO_END };
+const uint16_t PROGMEM combo_BRACKETS[] = { KC_LBRC, KC_RBRC, COMBO_END };
+const uint16_t PROGMEM combo_ANGLES[] = { KC_LABK, KC_RABK, COMBO_END };
+
 #define VOCAB_ENTRY MAKE_KEY_ARRAY
 VOCAB_LIST
 #undef VOCAB_ENTRY
 
-// 3. Pointers to key arrays (const for key_combos)
-#define KEY_ARRAY_PTR(NAME, STRING, ...) combo_##NAME
-
-static const uint16_t* const vocab_key_arrays[] = {
-#define VOCAB_ENTRY(NAME, STRING, ...) KEY_ARRAY_PTR(NAME, STRING, ...),
-    VOCAB_LIST
-#undef VOCAB_ENTRY
-};
-
-// 4. Combo array (make sure ordering matches enum!)
+// Combo array (make sure ordering matches enum!)
 combo_t key_combos[] = {
 #define VOCAB_ENTRY(NAME, STRING, ...) \
     [COMBO_##NAME] = COMBO_ACTION(combo_##NAME),
     VOCAB_LIST
 #undef VOCAB_ENTRY
-};
-
-// 5. Texts to output
-#define TEXT_ENTRY(NAME, STRING, ...) STRING
-
-static const char* const vocab_texts[] = {
-#define VOCAB_ENTRY(NAME, STRING, ...) TEXT_ENTRY(NAME, STRING, ...),
-    VOCAB_LIST
-#undef VOCAB_ENTRY
+    [COMBO_PARENS] = COMBO_ACTION(combo_PARENS),
+    [COMBO_BRACES] = COMBO_ACTION(combo_BRACES),
+    [COMBO_BRACKETS] = COMBO_ACTION(combo_BRACKETS),
+    [COMBO_ANGLES] = COMBO_ACTION(combo_ANGLES),
 };
 
 // 6. Unified event handler
@@ -244,5 +210,21 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
         case COMBO_##NAME: SEND_STRING(STRING); break;
     VOCAB_LIST
 #undef VOCAB_ENTRY
+        case COMBO_PARENS:
+            SEND_STRING("()");
+            tap_code(KC_LEFT);
+            break;
+        case COMBO_BRACES:
+            SEND_STRING("{}");
+            tap_code(KC_LEFT);
+            break;
+        case COMBO_BRACKETS:
+            SEND_STRING("[]");
+            tap_code(KC_LEFT);
+            break;
+        case COMBO_ANGLES:
+            SEND_STRING("<>");
+            tap_code(KC_LEFT);
+            break;
     }
 }
