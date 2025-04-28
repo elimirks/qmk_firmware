@@ -38,6 +38,44 @@ enum custom_keycodes {
 #define MT_T MT(MOD_RALT, KC_T)
 #define MT_N MT(MOD_RGUI, KC_N)
 
+/*
+enum combo_events {
+    COMBO_email,
+    COMBO_the,
+    COMBO_about,
+};
+
+const uint16_t PROGMEM combo_email[] = {KC_E, KC_M, COMBO_END};
+const uint16_t PROGMEM combo_the[] = {KC_T, KC_H, COMBO_END};
+const uint16_t PROGMEM combo_about[] = {KC_A, KC_B, COMBO_END};
+
+combo_t key_combos[] = {
+    [COMBO_email] = COMBO_ACTION(combo_email),
+    [COMBO_the] = COMBO_ACTION(combo_the),
+    [COMBO_about] = COMBO_ACTION(combo_about),
+};
+
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    switch (combo_index) {
+        case COMBO_email:
+            if (pressed) {
+                SEND_STRING("email");
+                break;
+            }
+        case COMBO_the:
+            if (pressed) {
+                SEND_STRING("the");
+                break;
+            }
+        case COMBO_about:
+            if (pressed) {
+                SEND_STRING("about");
+                break;
+            }
+    }
+}
+*/
+
 // ----------------------------------------------------
 // Mapping
 // ----------------------------------------------------
@@ -46,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ALPHA] = LAYOUT(
   _______, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    EL_CAD,
   KC_TAB,  KC_QUOT, KC_COMM, KC_DOT,  KC_P,    KC_Y,                      KC_F,    KC_G,    KC_C,    KC_R,    KC_L,    KC_BSPC,
-  KC_ESC,  KC_A,    KC_O,    KC_E,    MT_U,    KC_I,                      KC_D,    MT_H,    MT_T,    MT_N,    KC_S,    KC_ENT,
+  KC_ESC,  KC_A,    KC_O,    KC_E,    KC_U,    KC_I,                      KC_D,    KC_H,    KC_T,    KC_N,    KC_S,    KC_ENT,
   _______, KC_UNDS, KC_Q,    KC_J,    KC_K,    KC_X,    TT_MAU5, MO_RASE, KC_B,    KC_M,    KC_W,    KC_V,    KC_Z,    _______,
                              _______, KC_LGUI, EL_SHFT, KC_SPC,  MO_LOWR, KC_LCTL, KC_LALT, _______
 ),
@@ -107,4 +145,104 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
     }
     return true;
+}
+
+// ----------------------------------------------------
+// Steno(ish)
+// ----------------------------------------------------
+
+#define VOCAB_LIST\
+    VOCAB_ENTRY(the,      "the",      KC_T, KC_H, KC_E)\
+    VOCAB_ENTRY(ing,      "ing",      KC_I, KC_N, KC_G)\
+    VOCAB_ENTRY(out,      "out",      KC_O, KC_U, KC_T)\
+    VOCAB_ENTRY(wha,      "wha",      KC_W, KC_H, KC_A)\
+    VOCAB_ENTRY(and,      "and",      KC_A, KC_N, KC_D)\
+    VOCAB_ENTRY(ion,      "ion",      KC_I, KC_O, KC_N)\
+    VOCAB_ENTRY(her,      "her",      KC_H, KC_E, KC_R)\
+    VOCAB_ENTRY(for,      "for",      KC_F, KC_O, KC_R)\
+    VOCAB_ENTRY(tha,      "tha",      KC_T, KC_H, KC_A)\
+    VOCAB_ENTRY(tio,      "tio",      KC_T, KC_I, KC_O)\
+    VOCAB_ENTRY(ent,      "ent",      KC_E, KC_N, KC_T)\
+    VOCAB_ENTRY(ati,      "ati",      KC_A, KC_T, KC_I)\
+    VOCAB_ENTRY(his,      "his",      KC_H, KC_I, KC_S)\
+    VOCAB_ENTRY(thi,      "thi",      KC_T, KC_H, KC_I)\
+    VOCAB_ENTRY(pre,      "pre",      KC_P, KC_R, KC_E)\
+    VOCAB_ENTRY(whi,      "whi",      KC_W, KC_H, KC_I)\
+    VOCAB_ENTRY(ter,      "ter",      KC_T, KC_E, KC_R)\
+    VOCAB_ENTRY(ate,      "ate",      KC_A, KC_T, KC_E)\
+    VOCAB_ENTRY(con,      "con",      KC_C, KC_O, KC_N)\
+    VOCAB_ENTRY(res,      "res",      KC_R, KC_E, KC_S)\
+    VOCAB_ENTRY(has,      "has",      KC_H, KC_A, KC_S)\
+    VOCAB_ENTRY(est,      "est",      KC_E, KC_S, KC_T)\
+    VOCAB_ENTRY(tion,     "tion",     KC_T, KC_I, KC_O, KC_N)\
+    VOCAB_ENTRY(ther,     "ther",     KC_T, KC_H, KC_E, KC_R)\
+    VOCAB_ENTRY(ment,     "ment",     KC_M, KC_E, KC_N, KC_T)\
+    VOCAB_ENTRY(this,     "this",     KC_T, KC_H, KC_I, KC_S)\
+    VOCAB_ENTRY(ould,     "ould",     KC_O, KC_U, KC_L, KC_D)\
+    VOCAB_ENTRY(have,     "have",     KC_H, KC_A, KC_V, KC_E)\
+    VOCAB_ENTRY(when,     "when",     KC_W, KC_H, KC_E, KC_N)\
+    VOCAB_ENTRY(ance,     "ance",     KC_A, KC_N, KC_C, KC_E)\
+    VOCAB_ENTRY(ence,     "ence",     KC_E, KC_N, KC_C, KC_E)\
+    VOCAB_ENTRY(able,     "able",     KC_A, KC_B, KC_L, KC_E)\
+    VOCAB_ENTRY(ator,     "ator",     KC_A, KC_T, KC_O, KC_R)\
+    VOCAB_ENTRY(ates,     "ates",     KC_A, KC_T, KC_E, KC_S)\
+    VOCAB_ENTRY(ouse,     "ouse",     KC_O, KC_U, KC_S, KC_E)\
+    VOCAB_ENTRY(sent,     "sent",     KC_S, KC_E, KC_N, KC_T)\
+    VOCAB_ENTRY(base,     "base",     KC_B, KC_A, KC_S, KC_E)\
+
+
+// Helper macros to count the number of arguments
+#define COUNT_ARGS(...) COUNT_ARGS_(__VA_ARGS__, 10,9,8,7,6,5,4,3,2,1)
+#define COUNT_ARGS_(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,N,...) N
+
+// 1. Enumerate the combos
+enum combo_events {
+#define VOCAB_ENTRY(NAME, STRING, ...)  COMBO_##NAME,
+    VOCAB_LIST
+#undef VOCAB_ENTRY
+};
+
+// 2. Key arrays - create array named combo_<name> for each, with variable length
+#define MAKE_KEY_ARRAY(NAME, STRING, ...) \
+    const uint16_t PROGMEM combo_##NAME[] = { __VA_ARGS__, COMBO_END };
+
+#define VOCAB_ENTRY MAKE_KEY_ARRAY
+VOCAB_LIST
+#undef VOCAB_ENTRY
+
+// 3. Pointers to key arrays (const for key_combos)
+#define KEY_ARRAY_PTR(NAME, STRING, ...) combo_##NAME
+
+static const uint16_t* const vocab_key_arrays[] = {
+#define VOCAB_ENTRY(NAME, STRING, ...) KEY_ARRAY_PTR(NAME, STRING, ...),
+    VOCAB_LIST
+#undef VOCAB_ENTRY
+};
+
+// 4. Combo array (make sure ordering matches enum!)
+combo_t key_combos[] = {
+#define VOCAB_ENTRY(NAME, STRING, ...) \
+    [COMBO_##NAME] = COMBO_ACTION(combo_##NAME),
+    VOCAB_LIST
+#undef VOCAB_ENTRY
+};
+
+// 5. Texts to output
+#define TEXT_ENTRY(NAME, STRING, ...) STRING
+
+static const char* const vocab_texts[] = {
+#define VOCAB_ENTRY(NAME, STRING, ...) TEXT_ENTRY(NAME, STRING, ...),
+    VOCAB_LIST
+#undef VOCAB_ENTRY
+};
+
+// 6. Unified event handler
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    if (!pressed) return;
+    switch (combo_index) {
+#define VOCAB_ENTRY(NAME, STRING, ...) \
+        case COMBO_##NAME: SEND_STRING(STRING); break;
+    VOCAB_LIST
+#undef VOCAB_ENTRY
+    }
 }
